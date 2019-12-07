@@ -15,9 +15,10 @@ import java.util.logging.Logger;
 public class Executor {
     private static final Logger LOGGER = Logger.getLogger(Executor.class.getName());
     public static void main(String[] args) {
-        File file = new File("./src/main/resources/test/fully_valid_data.csv");
-//        File file = new File("./src/main/resources/test/partially_valid_data.csv");
-//        File file = new File("./src/main/resources/test/fully_invalid_data.csv");
+//        File file = new File("./src/test/resources/fully_valid_data.csv");
+//        File file = new File("./src/test/resources/partially_valid_data.csv");
+//        File file = new File("./src/test/resources/test/fully_invalid_data.csv");
+        File file = new File("./src/main/resources/data.csv");
         try {
             List<DriverReport> driverReports = CommandProcessor.Factory.createInstance().generateDriverReports(file);
             for(DriverReport r: driverReports) {
