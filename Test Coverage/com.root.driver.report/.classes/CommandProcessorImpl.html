@@ -1,0 +1,293 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CommandProcessorImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.root.driver.report</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CommandProcessorImpl (com.root.driver.report)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">CommandProcessorImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (65/ 65)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">CommandProcessorImpl$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (10/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (66/ 66)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.root.driver.report;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.root.driver.report.exception.InvalidDataException;
+<i>4</i>&nbsp;import com.root.driver.report.exception.UnrecognizedCommandException;
+<i>5</i>&nbsp;import com.root.driver.report.model.Command;
+<i>6</i>&nbsp;import com.root.driver.report.model.DriverReport;
+<i>7</i>&nbsp;import com.root.driver.report.model.MinutesAndMiles;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;import java.io.BufferedReader;
+<i>10</i>&nbsp;import java.io.File;
+<i>11</i>&nbsp;import java.io.FileReader;
+<i>12</i>&nbsp;import java.io.IOException;
+<i>13</i>&nbsp;import java.time.Duration;
+<i>14</i>&nbsp;import java.time.LocalTime;
+<i>15</i>&nbsp;import java.time.format.DateTimeParseException;
+<i>16</i>&nbsp;import java.util.ArrayList;
+<i>17</i>&nbsp;import java.util.HashMap;
+<i>18</i>&nbsp;import java.util.List;
+<i>19</i>&nbsp;import java.util.Map;
+<i>20</i>&nbsp;import java.util.logging.Level;
+<i>21</i>&nbsp;import java.util.logging.Logger;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;/**
+<i>24</i>&nbsp; * A class to handle processing the input CSV file.
+<i>25</i>&nbsp; */
+<b class="fc"><i>26</i>&nbsp;public final class CommandProcessorImpl extends BaseCommandProcessorImpl implements CommandProcessor {</b>
+<b class="fc"><i>27</i>&nbsp;    private static final Logger LOGGER = Logger.getLogger(CommandProcessorImpl.class.getName());</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    // Key: Driver name
+<b class="fc"><i>30</i>&nbsp;    private final Map&lt;String, MinutesAndMiles&gt; driverTrips = new HashMap&lt;&gt;();</b>
+<i>31</i>&nbsp;    private static final int COMMAND_INDEX = 0;
+<i>32</i>&nbsp;    private static final int NAME_INDEX = 1;
+<i>33</i>&nbsp;    private static final int START_TIME_INDEX = 2;
+<i>34</i>&nbsp;    private static final int END_TIME_INDEX = 3;
+<i>35</i>&nbsp;    private static final int MILES_DRIVEN_INDEX = 4;
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    /**
+<i>38</i>&nbsp;     * {@inheritDoc}
+<i>39</i>&nbsp;     * @apiNote In the event that other exceptions occur due to invalid data,
+<i>40</i>&nbsp;     *          the specific line will be ignored and the report generation will move on to
+<i>41</i>&nbsp;     *          the next line.
+<i>42</i>&nbsp;     */
+<i>43</i>&nbsp;    @Override
+<i>44</i>&nbsp;    public List&lt;DriverReport&gt; generateDriverReports(File file) throws IOException {
+<b class="fc"><i>45</i>&nbsp;        try (BufferedReader br = new BufferedReader(new FileReader(file))) {</b>
+<i>46</i>&nbsp;            String line;
+<b class="fc"><i>47</i>&nbsp;            while ((line = br.readLine()) != null) {</b>
+<i>48</i>&nbsp;                try {
+<b class="fc"><i>49</i>&nbsp;                    processCSVLine(line);</b>
+<b class="fc"><i>50</i>&nbsp;                } catch (UnrecognizedCommandException e) {</b>
+<b class="fc"><i>51</i>&nbsp;                    LOGGER.log(Level.WARNING, &quot;Command not recognized.&quot;);</b>
+<b class="fc"><i>52</i>&nbsp;                } catch (InvalidDataException e) {</b>
+<b class="fc"><i>53</i>&nbsp;                    LOGGER.log(Level.WARNING, &quot;The data row is incomplete or invalid.&quot;);</b>
+<b class="fc"><i>54</i>&nbsp;                } catch (DateTimeParseException e) {</b>
+<b class="fc"><i>55</i>&nbsp;                    LOGGER.log(Level.WARNING, &quot;Time could not be parsed.&quot;);</b>
+<b class="fc"><i>56</i>&nbsp;                } catch (NumberFormatException e) {</b>
+<b class="fc"><i>57</i>&nbsp;                    LOGGER.log(Level.WARNING, &quot;Miles driven could not be parsed.&quot;);</b>
+<b class="fc"><i>58</i>&nbsp;                }</b>
+<i>59</i>&nbsp;            }
+<b class="fc"><i>60</i>&nbsp;            return sortByMilesDrivenDesc(consolidateReports());</b>
+<b class="fc"><i>61</i>&nbsp;        } catch (IOException e) {</b>
+<b class="fc"><i>62</i>&nbsp;            LOGGER.log(Level.SEVERE, &quot;The file does not exist or could not be read.&quot;);</b>
+<b class="fc"><i>63</i>&nbsp;            throw e;</b>
+<i>64</i>&nbsp;        }
+<i>65</i>&nbsp;    }
+<i>66</i>&nbsp;
+<i>67</i>&nbsp;    /**
+<i>68</i>&nbsp;     * Processes each line of the given comma separated line.
+<i>69</i>&nbsp;     * @param line A comma separated line containing a command and corresponding metrics.
+<i>70</i>&nbsp;     */
+<i>71</i>&nbsp;    final void processCSVLine(String line) throws UnrecognizedCommandException {
+<i>72</i>&nbsp;        // Split the line by comma.
+<b class="fc"><i>73</i>&nbsp;        String[] values = line.split(&quot;,&quot;);</b>
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;        // The minimum expected length is 2 since Driver command has one argument. i.e., Driver,Mark
+<b class="fc"><i>76</i>&nbsp;        if(values.length &lt; 2)</b>
+<b class="fc"><i>77</i>&nbsp;            throw new InvalidDataException(&quot;Invalid Row:&quot; + line);</b>
+<i>78</i>&nbsp;
+<i>79</i>&nbsp;        Command command;
+<i>80</i>&nbsp;        try{
+<i>81</i>&nbsp;            // Enum.valueOf throws IllegalArgumentException if the command is not recognized.
+<i>82</i>&nbsp;            // The IllegalArgumentException is caught and rethrown as an UnrecognizedCommandException for an easier read.
+<b class="fc"><i>83</i>&nbsp;            command = Enum.valueOf(Command.class, values[COMMAND_INDEX].toUpperCase());</b>
+<b class="fc"><i>84</i>&nbsp;        } catch (IllegalArgumentException e) {</b>
+<b class="fc"><i>85</i>&nbsp;            throw new UnrecognizedCommandException(&quot;Unknown command encountered!&quot;, e);</b>
+<b class="fc"><i>86</i>&nbsp;        }</b>
+<b class="fc"><i>87</i>&nbsp;        switch(command) {</b>
+<i>88</i>&nbsp;            case DRIVER:
+<b class="fc"><i>89</i>&nbsp;                registerDriver(values[NAME_INDEX].trim());</b>
+<i>90</i>&nbsp;                // If there are other values beyond index 1, they are ignored.
+<b class="fc"><i>91</i>&nbsp;                break;</b>
+<i>92</i>&nbsp;            case TRIP:
+<i>93</i>&nbsp;                // Name, start time,end time and miles driven are required.
+<b class="fc"><i>94</i>&nbsp;                if(!areTripArgsValid(values))</b>
+<b class="fc"><i>95</i>&nbsp;                    throw new InvalidDataException(&quot;Invalid Row:&quot; + line);</b>
+<i>96</i>&nbsp;
+<b class="fc"><i>97</i>&nbsp;                String name = values[NAME_INDEX];</b>
+<b class="fc"><i>98</i>&nbsp;                LocalTime startTime = LocalTime.parse(values[START_TIME_INDEX]);</b>
+<b class="fc"><i>99</i>&nbsp;                LocalTime endTime = LocalTime.parse(values[END_TIME_INDEX]);</b>
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;                // Only if the end time is after start time, we consider it a valid row.
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;                if (endTime.isAfter(startTime)) {</b>
+<b class="fc"><i>104</i>&nbsp;                    double milesDriven = Double.parseDouble(values[MILES_DRIVEN_INDEX]);</b>
+<b class="fc"><i>105</i>&nbsp;                    int minutes = (int) Duration.between(startTime, endTime).toMinutes();</b>
+<b class="fc"><i>106</i>&nbsp;                    double speed = getSpeed(milesDriven, minutes);</b>
+<i>107</i>&nbsp;
+<i>108</i>&nbsp;                    // Only if MIN_SPEED &lt;= speed &lt;= MAX_SPEED, add to the driver&#39;s profile.
+<b class="fc"><i>109</i>&nbsp;                    if (isSpeedInRange(speed)) {</b>
+<b class="fc"><i>110</i>&nbsp;                        addTrip(name, minutes, milesDriven);</b>
+<i>111</i>&nbsp;                    }
+<b class="fc"><i>112</i>&nbsp;                }</b>
+<i>113</i>&nbsp;                break;
+<i>114</i>&nbsp;            default:
+<i>115</i>&nbsp;                // It&#39;s impossible to get to the default block as Enum.valueOf() will
+<i>116</i>&nbsp;                // throw an IllegalArgumentException in case of an unrecognized command.
+<i>117</i>&nbsp;        }
+<b class="fc"><i>118</i>&nbsp;    }</b>
+<i>119</i>&nbsp;
+<i>120</i>&nbsp;    /**
+<i>121</i>&nbsp;     * Verifies that all values required to process TRIP command exist.
+<i>122</i>&nbsp;     * @param values The comma separated values.
+<i>123</i>&nbsp;     * @return true or false indicating validity.
+<i>124</i>&nbsp;     */
+<i>125</i>&nbsp;    private static boolean areTripArgsValid(String[] values) {
+<b class="fc"><i>126</i>&nbsp;        if(MILES_DRIVEN_INDEX &lt; values.length) {</b>
+<b class="fc"><i>127</i>&nbsp;            boolean isValid = true;</b>
+<b class="fc"><i>128</i>&nbsp;            for(int i = NAME_INDEX; i &lt;= MILES_DRIVEN_INDEX; i++) {</b>
+<b class="fc"><i>129</i>&nbsp;                isValid = isValid &amp;&amp; isStringBlank(values[i]);</b>
+<i>130</i>&nbsp;            }
+<b class="fc"><i>131</i>&nbsp;            return isValid;</b>
+<i>132</i>&nbsp;        }
+<b class="fc"><i>133</i>&nbsp;        return false;</b>
+<i>134</i>&nbsp;    }
+<i>135</i>&nbsp;
+<i>136</i>&nbsp;    /**
+<i>137</i>&nbsp;     * Returns if the string is null,empty or blank.
+<i>138</i>&nbsp;     * @param value The string value
+<i>139</i>&nbsp;     * @return true or false.
+<i>140</i>&nbsp;     */
+<i>141</i>&nbsp;    private static boolean isStringBlank(String value) {
+<b class="fc"><i>142</i>&nbsp;        return value != null &amp;&amp; !value.trim().isEmpty();</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Consolidates the reports of each driver to the rounded off speeds and distances.
+<i>147</i>&nbsp;     * @return The collection of reports for each driver.
+<i>148</i>&nbsp;     */
+<i>149</i>&nbsp;    private List&lt;DriverReport&gt; consolidateReports() {
+<b class="fc"><i>150</i>&nbsp;        List&lt;DriverReport&gt; reports = new ArrayList&lt;&gt;();</b>
+<b class="fc"><i>151</i>&nbsp;        for(String driver: driverTrips.keySet()) {</b>
+<b class="fc"><i>152</i>&nbsp;            MinutesAndMiles minsAndMiles = driverTrips.get(driver);</b>
+<b class="fc"><i>153</i>&nbsp;            int roundedOffSpeed = (int) Math.round(getSpeed(minsAndMiles.getMiles(), minsAndMiles.getMinutes()));</b>
+<b class="fc"><i>154</i>&nbsp;            int roundedOffDistance = (int) Math.round(minsAndMiles.getMiles());</b>
+<i>155</i>&nbsp;
+<b class="fc"><i>156</i>&nbsp;            reports.add(new DriverReport(driver, roundedOffDistance, roundedOffSpeed));</b>
+<b class="fc"><i>157</i>&nbsp;        }</b>
+<b class="fc"><i>158</i>&nbsp;        return reports;</b>
+<i>159</i>&nbsp;    }
+<i>160</i>&nbsp;
+<i>161</i>&nbsp;    /**
+<i>162</i>&nbsp;     * Creates a profile for the driver.
+<i>163</i>&nbsp;     * @param name Name of the driver
+<i>164</i>&nbsp;     */
+<i>165</i>&nbsp;    private void registerDriver(String name) {
+<b class="fc"><i>166</i>&nbsp;        addTrip(name, 0, 0);</b>
+<b class="fc"><i>167</i>&nbsp;    }</b>
+<i>168</i>&nbsp;
+<i>169</i>&nbsp;    /**
+<i>170</i>&nbsp;     * Adds the distance and minutes driven to a driver&#39;s profile.
+<i>171</i>&nbsp;     * @param name Name of the driver.
+<i>172</i>&nbsp;     * @param minutes The minutes driven.
+<i>173</i>&nbsp;     * @param distance The distance driven.
+<i>174</i>&nbsp;     */
+<i>175</i>&nbsp;    private void addTrip(String name, int minutes, double distance) {
+<b class="fc"><i>176</i>&nbsp;        MinutesAndMiles minsAndMiles = driverTrips.get(name);</b>
+<b class="fc"><i>177</i>&nbsp;        if(minsAndMiles == null) {</b>
+<b class="fc"><i>178</i>&nbsp;            driverTrips.put(name, new MinutesAndMiles(distance, minutes));</b>
+<i>179</i>&nbsp;        } else {
+<b class="fc"><i>180</i>&nbsp;            driverTrips.put(name,</b>
+<b class="fc"><i>181</i>&nbsp;                    new MinutesAndMiles(minsAndMiles.getMiles() + distance, minsAndMiles.getMinutes() + minutes));</b>
+<i>182</i>&nbsp;        }
+<b class="fc"><i>183</i>&nbsp;    }</b>
+<i>184</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-12-07 08:41</div>
+</div>
+</body>
+</html>

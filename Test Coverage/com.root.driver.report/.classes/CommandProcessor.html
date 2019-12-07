@@ -1,0 +1,118 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: CommandProcessor</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.root.driver.report</a> ]
+</div>
+
+<h1>Coverage Summary for Class: CommandProcessor (com.root.driver.report)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+  <tr>
+    <td class="name">CommandProcessor$Factory</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    50%
+  </span>
+  <span class="absValue">
+    (1/ 2)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.root.driver.report;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.root.driver.report.model.DriverReport;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.io.File;
+<i>6</i>&nbsp;import java.io.IOException;
+<i>7</i>&nbsp;import java.util.List;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; * An interface to process the command.
+<i>11</i>&nbsp; */
+<i>12</i>&nbsp;public interface CommandProcessor {
+<i>13</i>&nbsp;    /**
+<i>14</i>&nbsp;     * Processes the input file and returns a list of {@link DriverReport}s.
+<i>15</i>&nbsp;     * @return A collection of {@link DriverReport}s.
+<i>16</i>&nbsp;     * @throws IOException If the file is invalid or could not be read.
+<i>17</i>&nbsp;     */
+<i>18</i>&nbsp;    List&lt;DriverReport&gt; generateDriverReports(File file) throws IOException;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    /**
+<i>21</i>&nbsp;     * Factory to createInstance an implementation
+<i>22</i>&nbsp;     */
+<b class="nc"><i>23</i>&nbsp;    class Factory {</b>
+<i>24</i>&nbsp;        public static CommandProcessor createInstance() {
+<b class="fc"><i>25</i>&nbsp;            return new CommandProcessorImpl();</b>
+<i>26</i>&nbsp;        }
+<i>27</i>&nbsp;    }
+<i>28</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-12-07 08:41</div>
+</div>
+</body>
+</html>

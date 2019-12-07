@@ -1,0 +1,147 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: BaseCommandProcessorImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">com.root.driver.report</a> ]
+</div>
+
+<h1>Coverage Summary for Class: BaseCommandProcessorImpl (com.root.driver.report)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">BaseCommandProcessorImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (5/ 5)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (11/ 11)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package com.root.driver.report;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import com.root.driver.report.model.DriverReport;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.io.File;
+<i>6</i>&nbsp;import java.io.IOException;
+<i>7</i>&nbsp;import java.util.Collections;
+<i>8</i>&nbsp;import java.util.List;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;/**
+<i>11</i>&nbsp; * An abstract implementation to process input.
+<i>12</i>&nbsp; */
+<b class="fc"><i>13</i>&nbsp;abstract class BaseCommandProcessorImpl implements CommandProcessor {</b>
+<i>14</i>&nbsp;    private static final double MIN_SPEED = 5;
+<i>15</i>&nbsp;    private static final double MAX_SPEED = 100;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    public abstract List&lt;DriverReport&gt; generateDriverReports(File file) throws IOException;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    /**
+<i>20</i>&nbsp;     * Returns if the speed is in the expected range.
+<i>21</i>&nbsp;     * @param speed The speed to check range for.
+<i>22</i>&nbsp;     * @return true or false.
+<i>23</i>&nbsp;     */
+<i>24</i>&nbsp;    static boolean isSpeedInRange(double speed) {
+<b class="fc"><i>25</i>&nbsp;        return MIN_SPEED &lt;= speed &amp;&amp; speed &lt;= MAX_SPEED;</b>
+<i>26</i>&nbsp;    }
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     * Returns the speed rounded off to the closest integer.
+<i>30</i>&nbsp;     * @param distance The total distance driven.
+<i>31</i>&nbsp;     * @param durationInMinutes The total time driven (in Minutes).
+<i>32</i>&nbsp;     * @return The speed as an integer.
+<i>33</i>&nbsp;     */
+<i>34</i>&nbsp;    static double getSpeed(double distance, int durationInMinutes) {
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;        // If the time driven is zero, return zero since there&#39;s no speed to calculate.
+<i>37</i>&nbsp;
+<i>38</i>&nbsp;        // Reason to not throw an exception: If there&#39;s a driver registered but has no trips, then their distance would be
+<i>39</i>&nbsp;        // zero with zero minutes driven. Hence, it makes logical sense to call it a zero speed
+<i>40</i>&nbsp;        // rather than throw an exception (which is semantically correct here).
+<b class="fc"><i>41</i>&nbsp;        if(durationInMinutes == 0) return 0;</b>
+<i>42</i>&nbsp;
+<b class="fc"><i>43</i>&nbsp;        double timeInHours = (double) durationInMinutes/60;</b>
+<b class="fc"><i>44</i>&nbsp;        return distance/timeInHours;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     * Sorts the reports in descending order
+<i>49</i>&nbsp;     * @param reports The collection of reports.
+<i>50</i>&nbsp;     * @return The collection of reports sorted by the distance driven in descending order.
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    static List&lt;DriverReport&gt; sortByMilesDrivenDesc(List&lt;DriverReport&gt; reports) {
+<b class="fc"><i>53</i>&nbsp;        if(reports == null) return Collections.emptyList();</b>
+<i>54</i>&nbsp;        // reverseOrder() here is important as we want the sorting to be done in descending order.
+<b class="fc"><i>55</i>&nbsp;        reports.sort(Collections.reverseOrder(</b>
+<i>56</i>&nbsp;                (report1, report2) -&gt; {
+<b class="fc"><i>57</i>&nbsp;                    if(report1.getMilesDriven() &lt; report2.getMilesDriven()) return -1;</b>
+<b class="fc"><i>58</i>&nbsp;                    if(report1.getMilesDriven() &gt; report2.getMilesDriven()) return 1;</b>
+<b class="fc"><i>59</i>&nbsp;                    return 0;</b>
+<i>60</i>&nbsp;                }
+<i>61</i>&nbsp;        ));
+<b class="fc"><i>62</i>&nbsp;        return reports;</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-12-07 08:41</div>
+</div>
+</body>
+</html>
