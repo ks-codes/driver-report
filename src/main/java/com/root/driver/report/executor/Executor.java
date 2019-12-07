@@ -10,20 +10,17 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * Class to execute the
+ * Class to execute the CommandProcessor functionality.
  */
 public class Executor {
     private static final Logger LOGGER = Logger.getLogger(Executor.class.getName());
     public static void main(String[] args) {
-//        File file = new File("./src/test/resources/fully_valid_data.csv");
-//        File file = new File("./src/test/resources/partially_valid_data.csv");
-//        File file = new File("./src/test/resources/test/fully_invalid_data.csv");
-        File file = new File("./src/main/resources/data.csv");
+        File file = new File(args[0]);
         try {
             List<DriverReport> driverReports = CommandProcessor.Factory.createInstance().generateDriverReports(file);
             for(DriverReport r: driverReports) {
-                LOGGER.log(Level.INFO, r.getDriver() + ":"
-                        + r.getMilesDriven() + "@" + r.getAverageSpeed());
+                System.out.println(r.getDriver() + ":"
+                        + r.getMilesDriven() + " miles @ " + r.getAverageSpeed() + " mph");
             }
         } catch(IOException e) {
             LOGGER.log(Level.SEVERE, "File not found; no report generated.");
